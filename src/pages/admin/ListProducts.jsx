@@ -135,14 +135,7 @@ export default function ListProducts() {
       <NavBar />
       <Grid container spacing={2}>
         <Grid item xs={12} md={12}>
-          {loading && (
-            <Backdrop
-              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={true}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
-          )}
+         
 
           {error && (
             <Typography variant="h6" color="error">
