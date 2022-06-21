@@ -49,7 +49,7 @@ const LoginScreen = () => {
       navigate("/home", { replace: true });
       toast.success("Login Successful");
     }
-  }, [navigate]);
+  }, [navigate,user]);
 
   const { login } = useUserAuth();
 
