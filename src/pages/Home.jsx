@@ -7,6 +7,8 @@ const Home = () => {
     <>
       <NavBar />
       
+
+      
     </>
   );
 };
