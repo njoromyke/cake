@@ -17,12 +17,16 @@ import {
 import { Box } from "@mui/system";
 import { ShoppingBasketOutlined } from "@mui/icons-material";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [products, setProduct] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const navigate = useNavigate();
+  const { addToCart } = useCart();
+  
   const productRef = collection(db, "products");
 
   const fetchProducts = async () => {
@@ -46,9 +50,7 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  const { addToCart, removeFromCart, cart } = useCart();
 
-  console.log(cart);
 
   return (
     <>
@@ -92,7 +94,13 @@ const Home = () => {
                   >
                     Add To Card
                   </Button>
-                  <Button variant="contained">Buy now</Button>
+                  <Button
+                    onClick={() => navigate(`/products/${product.id}`)}
+                    products
+                    variant="contained"
+                  >
+                    Buy now
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
