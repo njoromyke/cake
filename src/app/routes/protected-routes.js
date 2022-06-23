@@ -3,6 +3,7 @@ import CreateProduct from "../../pages/admin/CreateProduct";
 import ListProducts from "../../pages/admin/ListProducts";
 import LoginScreen from "../../pages/auth/Login";
 import RegisterScreen from "../../pages/auth/Register";
+import Cart from "../../pages/cart/Cart";
 import Home from "../../pages/Home";
 import ProductDetail from "../../pages/products/ProductDetail";
 
@@ -15,6 +16,7 @@ const ProtectedRoutes = () => {
           <Route path="/signup" element={<RegisterScreen />} />
           <Route path="/admin/products" element={<ListProducts />} />
           <Route path="/products/:id" element={<ProductDetail />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/admin/products/add" element={<CreateProduct />} />
           <Route path="/home" element={<Home />} />
         </Routes>

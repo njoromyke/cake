@@ -149,7 +149,7 @@ const ProductDetail = () => {
                     Add To Card
                   </Button>
                   <Button
-                    onClick={() => navigate(`/cart}`)}
+                    onClick={() => navigate(`/cart`)}
                     variant="contained"
                   >
                     View Cart
