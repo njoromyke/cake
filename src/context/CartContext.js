@@ -2,49 +2,77 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const useCartContext = createContext();
 export function CartContextProvider({ children }) {
-  const [cart, setCart] = useState({});
-  function addToCart(product) {
-    setCart((prevCart) => ({ ...prevCart, [product.id]: product }));
-    
-   
-  }
+  const [cart, setCart] = useState({
+    items: [],
+    total: 0,
+    totalPrice: 0,
+  });
 
-  function removeFromCart(product) {
+  
+
+  async function addToCart(item) {
     const newCart = { ...cart };
-    delete newCart[product.id];
+    const itemIndex = newCart.items.findIndex((i) => i.id === item.id);
+    if (itemIndex === -1) {
+      newCart.items.push({ ...item, quantity: 1 });
+    } else {
+      newCart.items[itemIndex].quantity++;
+    }
+    newCart.total = newCart.items.reduce((acc, cur) => acc + cur.quantity, 0);
+    newCart.totalPrice = newCart.items.reduce(
+      (acc, cur) => acc + cur.price * cur.quantity,
+      0
+    );
     setCart(newCart);
-  }
-  function clearCart() {
-    setCart({});
-  }
-  function getTotalPrice() {
-    let total = 0;
-    for (let key in cart) {
-      total += cart[key].price;
-    }
-    return total;
+    localStorage.setItem("cart", JSON.stringify(newCart));
   }
 
-  function getTotalQuantity() {
-    let total = 0;
-    for (let key in cart) {
-      total += cart[key].quantity;
+  async function removeFromCart(item) {
+    const newCart = { ...cart };
+    const itemIndex = newCart.items.findIndex((i) => i.id === item.id);
+    if (itemIndex !== -1) {
+      newCart.items.splice(itemIndex, 1);
     }
-    return total;
+    newCart.total = newCart.items.reduce((acc, cur) => acc + cur.quantity, 0);
+    newCart.totalPrice = newCart.items.reduce(
+      (acc, cur) => acc + cur.price * cur.quantity,
+      0
+    );
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
   }
 
-  function getTotalItems() {
-    let total = 0;
-    for (let key in cart) {
-      total += cart[key].quantity;
+  async function clearCart() {
+    const newCart = { ...cart };
+    newCart.items = [];
+    newCart.total = 0;
+    newCart.totalPrice = 0;
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  }
+
+  async function updateProductQty(item, qty) {
+    const newCart = { ...cart };
+    const itemIndex = newCart.items.findIndex((i) => i.id === item.id);
+    if (itemIndex !== -1) {
+      newCart.items[itemIndex].quantity = qty;
     }
-    return total;
+    newCart.total = newCart.items.reduce((acc, cur) => acc + cur.quantity, 0);
+    newCart.totalPrice = newCart.items.reduce(
+      (acc, cur) => acc + cur.price * cur.quantity,
+      0
+    );
+    setCart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
   }
 
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
-
+    const cart = localStorage.getItem("cart");
+    if (cart) {
+      setCart(JSON.parse(cart));
+    }
+  }, []);
+  
   return (
     <useCartContext.Provider
       value={{
@@ -52,9 +80,7 @@ export function CartContextProvider({ children }) {
         addToCart,
         removeFromCart,
         clearCart,
-        getTotalPrice,
-        getTotalQuantity,
-        getTotalItems,
+        updateProductQty,
       }}
     >
       {children}

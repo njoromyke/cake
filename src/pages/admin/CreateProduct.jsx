@@ -23,6 +23,7 @@ const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
   image: Yup.string().required("Image is required"),
   price: Yup.number().required("Price is required"),
+  description: Yup.string().required("Description is required"),
 });
 
 const CreateProduct = () => {
@@ -85,6 +86,7 @@ const CreateProduct = () => {
                 name: "",
                 image: "",
                 price: "",
+                description:"",
               }}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
@@ -98,6 +100,9 @@ const CreateProduct = () => {
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <InputComponent label="price" />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <InputComponent label="description" multiline row="4" />
                 </Grid>
                 <Grid
                   item
