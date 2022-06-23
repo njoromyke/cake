@@ -14,6 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useTheme } from "@emotion/react";
+import { useCart } from "../context/CartContext";
+import { ShoppingBasket } from "@mui/icons-material";
 
 const NavBar = () => {
   const { palette } = useTheme();
@@ -39,6 +41,8 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   const handleLogout = async () => {};
+
+  const { addToCart, cart } = useCart();
 
   return (
     <AppBar position="sticky">
@@ -103,33 +107,40 @@ const NavBar = () => {
               <MenuItem onClick={handleCloseNavMenu}>
                 <Typography
                   onClick={() => {
-                    navigate("/reservations");
+                    navigate("/my-orders");
                   }}
                   variant="subtitle1"
                 >
-                  My Reservations
+                  My Orders
                 </Typography>
               </MenuItem>
               <MenuItem onClick={handleCloseNavMenu}>
-                <Typography
-                  onClick={() => {
-                    navigate("/contacts");
+                <Box
+                  sx={{
+                    ml: 1,
+                    position: "relative",
                   }}
-                  variant="subtitle1"
+                  onClick={() => {
+                    navigate("/cart");
+                  }}
                 >
-                  Contact us
-                </Typography>
+                  <ShoppingBasket />
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: palette.primary.contrastText,
+                      position: "absolute",
+                      top: "20%",
+                      transform: "translateY(-50%)",
+                    }}
+                  >
+                    {cart.total > 0 ? `(${cart.total})` : 0}
+                  </Typography>
+                </Box>
               </MenuItem>
             </Menu>
           </Box>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}
-          >
-            Hotel Booking
-          </Typography>
+
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
               onClick={() => {
@@ -144,24 +155,43 @@ const NavBar = () => {
 
             <Button
               onClick={() => {
-                navigate("/reservations");
+                navigate("/my-orders");
               }}
               sx={{
                 color: palette.primary.contrastText,
               }}
             >
-              My Reservations
+              My Orders
             </Button>
-
             <Button
               onClick={() => {
-                navigate("/contacts");
+                navigate("/cart");
               }}
               sx={{
                 color: palette.primary.contrastText,
               }}
             >
-              Contacts
+              Cart
+              <Box
+                sx={{
+                  display: { xs: "none", md: "inline" },
+                  ml: 1,
+                  position: "relative",
+                }}
+              >
+                <ShoppingBasket />
+                <Typography
+                  variant="caption"
+                  sx={{
+                    color: palette.primary.contrastText,
+                    position: "absolute",
+                    top: "20%",
+                    transform: "translateY(-50%)",
+                  }}
+                >
+                  {cart.total > 0 ? `(${cart.total})` : 0}
+                </Typography>
+              </Box>
             </Button>
           </Box>
 
