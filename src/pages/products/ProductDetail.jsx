@@ -126,7 +126,14 @@ const ProductDetail = () => {
                       }
                     >
                       {qty.map((qty) => (
-                        <option key={qty} value={qty}>
+                        <option
+                          key={qty}
+                          value={qty}
+                          selected={
+                            cart.items.find((p) => p.id === product.id)
+                              ?.quantity === qty
+                          }
+                        >
                           {qty}
                         </option>
                       ))}
@@ -148,10 +155,7 @@ const ProductDetail = () => {
                   >
                     Add To Card
                   </Button>
-                  <Button
-                    onClick={() => navigate(`/cart}`)}
-                    variant="contained"
-                  >
+                  <Button onClick={() => navigate(`/cart`)} variant="contained">
                     View Cart
                   </Button>
                 </CardActions>

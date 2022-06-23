@@ -47,9 +47,8 @@ const LoginScreen = () => {
   React.useEffect(() => {
     if (user && user.uid) {
       navigate("/home", { replace: true });
-      toast.success("Login Successful");
     }
-  }, [navigate,user]);
+  }, [navigate, user]);
 
   const { login } = useUserAuth();
 
