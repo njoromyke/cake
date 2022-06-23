@@ -25,8 +25,8 @@ const Home = () => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
-  const { addToCart } = useCart();
-  
+  const { addToCart, cart } = useCart();
+
   const productRef = collection(db, "products");
 
   const fetchProducts = async () => {
@@ -50,7 +50,7 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-
+  console.log(cart);
 
   return (
     <>
@@ -70,8 +70,8 @@ const Home = () => {
             </Backdrop>
           )}
           {products.map((product) => (
-            <Grid item xs={12} md={4}>
-              <Card sx={{ maxWidth: 345 }}>
+            <Grid item xs={12} md={3}>
+              <Card>
                 <CardMedia
                   component="img"
                   height="140"
