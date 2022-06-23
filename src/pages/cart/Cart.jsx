@@ -1,3 +1,4 @@
+import { DeleteForever } from "@mui/icons-material";
 import {
   Avatar,
   Button,
@@ -5,6 +6,7 @@ import {
   CardActions,
   CardContent,
   Grid,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -15,11 +17,13 @@ import {
 } from "@mui/material";
 import { Box, Container } from "@mui/system";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import NavBar from "../../components/NavBar";
 import { useCart } from "../../context/CartContext";
 
 const Cart = () => {
-  const { cart } = useCart();
+  const navigate = useNavigate();
+  const { cart, removeFromCart } = useCart();
   console.log(cart);
   return (
     <>
@@ -50,6 +54,7 @@ const Cart = () => {
                       <TableCell>Image</TableCell>
                       <TableCell>Price</TableCell>
                       <TableCell>Quantity</TableCell>
+                      <TableCell>Action</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -61,6 +66,15 @@ const Cart = () => {
                         </TableCell>
                         <TableCell>{item.price}</TableCell>
                         <TableCell>{item.quantity}</TableCell>
+                        <TableCell>
+                          <IconButton
+                            onClick={() => {
+                              removeFromCart(item);
+                            }}
+                          >
+                            <DeleteForever />
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -77,7 +91,11 @@ const Cart = () => {
                     Total Price: {cart.totalPrice}
                   </Typography>
                   <CardActions>
-                    <Button variant="contained" color="primary">
+                    <Button
+                      onClick={() => navigate("/checkout")}
+                      variant="contained"
+                      color="primary"
+                    >
                       Checkout
                     </Button>
                   </CardActions>

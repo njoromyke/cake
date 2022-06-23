@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
-import CustomCarousel from "../components/CustomCarousel";
 import NavBar from "../components/NavBar";
 import { db } from "../config/firebase";
 import {
