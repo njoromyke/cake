@@ -43,7 +43,11 @@ const ProductDetail = () => {
     fetchProduct();
   }, [params]);
 
-  const { addToCart } = useCart();
+  const { addToCart, cart, updateProductQty } = useCart();
+  const qty = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  const p = cart.items.find((p) => p.id === product.id);
+  console.log(p);
+
   return (
     <>
       <NavBar />
@@ -53,6 +57,16 @@ const ProductDetail = () => {
         }}
       >
         <Container>
+          <Typography
+            sx={{
+              textAlign: "center",
+              mb: 3,
+            }}
+            component="div"
+            variant="h3"
+          >
+            View Product
+          </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               {loading && (
@@ -66,16 +80,6 @@ const ProductDetail = () => {
                   <CircularProgress color="inherit" />
                 </Backdrop>
               )}
-              <Typography
-                sx={{
-                  textAlign: "center",
-                  mb: 3,
-                }}
-                component="div"
-                variant="h2"
-              >
-                View Product
-              </Typography>
 
               <div
                 style={{
@@ -90,37 +94,67 @@ const ProductDetail = () => {
                     image={product.image}
                     alt="green iguana"
                   />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {product.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Kes {product.price}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      variant="contained"
-                      startIcon={<ShoppingBasketOutlined />}
-                      onClick={() => addToCart(product)}
-                    >
-                      Add To Card
-                    </Button>
-                    <Button
-                      onClick={() => navigate(`/cart}`)}
-                      variant="contained"
-                    >
-                      View Cart
-                    </Button>
-                  </CardActions>
                 </Card>
               </div>
             </Grid>
             <Grid item xs={12} md={6}>
               <Card>
-                <Typography component="p" variant="p">
-                  Total cost
-                </Typography>
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {product.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Kes
+                    {product.price}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {product?.description}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Quantity{" "}
+                    <select
+                      style={{
+                        width: "100px",
+                        marginLeft: "10px",
+                        marginRight: "10px",
+                        borderRadius: "5px",
+                        border: "1px solid #ccc",
+                        padding: "5px",
+                      }}
+                      onChange={(e) =>
+                        updateProductQty(params.id, parseInt(e.target.value))
+                      }
+                    >
+                      {qty.map((qty) => (
+                        <option key={qty} value={qty}>
+                          {qty}
+                        </option>
+                      ))}
+                    </select>
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Total Price:{" "}
+                    {cart.items.find((p) => p.id === product.id)
+                      ? cart.items.find((p) => p.id === product.id).quantity *
+                        product.price
+                      : 0}
+                  </Typography>
+                </CardContent>
+                <CardActions>
+                  <Button
+                    variant="contained"
+                    startIcon={<ShoppingBasketOutlined />}
+                    onClick={() => addToCart(product)}
+                  >
+                    Add To Card
+                  </Button>
+                  <Button
+                    onClick={() => navigate(`/cart}`)}
+                    variant="contained"
+                  >
+                    View Cart
+                  </Button>
+                </CardActions>
               </Card>
             </Grid>
           </Grid>
