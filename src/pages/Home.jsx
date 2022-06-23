@@ -17,11 +17,15 @@ import {
 import { Box } from "@mui/system";
 import { ShoppingBasketOutlined } from "@mui/icons-material";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [products, setProduct] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+  const { addToCart, cart } = useCart();
 
   const productRef = collection(db, "products");
 
@@ -46,8 +50,6 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  const { addToCart, removeFromCart, cart } = useCart();
-
   console.log(cart);
 
   return (
@@ -68,8 +70,8 @@ const Home = () => {
             </Backdrop>
           )}
           {products.map((product) => (
-            <Grid item xs={12} md={4}>
-              <Card sx={{ maxWidth: 345 }}>
+            <Grid item xs={12} md={3}>
+              <Card>
                 <CardMedia
                   component="img"
                   height="140"
@@ -92,7 +94,13 @@ const Home = () => {
                   >
                     Add To Card
                   </Button>
-                  <Button variant="contained">Buy now</Button>
+                  <Button
+                    onClick={() => navigate(`/products/${product.id}`)}
+                    products
+                    variant="contained"
+                  >
+                    Buy now
+                  </Button>
                 </CardActions>
               </Card>
             </Grid>
