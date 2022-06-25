@@ -34,19 +34,20 @@ const CreateProduct = () => {
   useEffect(() => {}, []);
 
   const productsRef = collection(db, "products");
-
-  const handleSubmit = async ({ name, image, price }) => {
+  const handleSubmit = async ({ name, image, price ,description}) => {
     setLoading(true);
     try {
       const products = {
         name,
         image,
         price: parseInt(price),
+        description,
+
       };
       const createProduct = await addDoc(productsRef, products);
       if (createProduct) {
         toast.success("products created successfully");
-        navigate("/products");
+        navigate("/admin/products");
       }
       setLoading(false);
     } catch (error) {
@@ -86,7 +87,7 @@ const CreateProduct = () => {
                 name: "",
                 image: "",
                 price: "",
-                description:"",
+                description: "",
               }}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
