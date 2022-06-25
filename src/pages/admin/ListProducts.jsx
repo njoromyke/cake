@@ -34,7 +34,7 @@ export default function ListProducts() {
   const columns = [
     {
       field: "name",
-      width: 200,
+      width: 400,
       headerName: "Name",
       renderCell: (params) => {
         return <> {params.row.name} </>;
@@ -42,7 +42,7 @@ export default function ListProducts() {
     },
     {
       field: "price",
-      width: 200,
+      width: 400,
       headerName: "Price",
       renderCell: (params) => {
         return <> {params.row.price} </>;
@@ -56,16 +56,15 @@ export default function ListProducts() {
         return <Avatar src={params.row.image} />;
       },
     },
-   
 
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 400,
       renderCell: (params) => {
         return (
           <>
-            <Link href={`/products/${params.row.id}`}>
+            <Link href={`/admin/products/${params.row.id}`}>
               <ModeEditOutlineOutlined
                 style={{
                   color: palette.primary.main,
@@ -116,7 +115,6 @@ export default function ListProducts() {
     fetchData();
   }, [success, userInfo, navigate]);
 
-  console.log(data);
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete the Product?")) {
       try {
@@ -135,8 +133,6 @@ export default function ListProducts() {
       <NavBar />
       <Grid container spacing={2}>
         <Grid item xs={12} md={12}>
-         
-
           {error && (
             <Typography variant="h6" color="error">
               {error}
