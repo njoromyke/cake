@@ -11,6 +11,7 @@ import ProtectedRoutes from "./routes/protected-routes";
 const App = () => {
   return (
     <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
       <CartContextProvider>
         <UserAuthContextProvider>
           <Grid container>
