@@ -7,6 +7,7 @@ import {
   CardContent,
   Grid,
   IconButton,
+  Link,
   Paper,
   Table,
   TableBody,
@@ -24,7 +25,6 @@ import { useCart } from "../../context/CartContext";
 const Cart = () => {
   const navigate = useNavigate();
   const { cart, removeFromCart } = useCart();
-  console.log(cart);
   return (
     <>
       <NavBar />
@@ -37,9 +37,10 @@ const Cart = () => {
           sx={{
             textAlign: "center",
             mb: 3,
+            mt: 4,
           }}
           component="div"
-          variant="h3"
+          variant="h6"
         >
           Cart
         </Typography>
@@ -58,9 +59,27 @@ const Cart = () => {
                     </TableRow>
                   </TableHead>
                   <TableBody>
+                    {cart.items.length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={5}>
+                          <Typography
+                            sx={{
+                              textAlign: "center",
+                              mb: 3,
+                            }}
+                            component="div"
+                            variant="h6"
+                          >
+                            Cart is empty
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
                     {cart.items.map((item) => (
                       <TableRow key={item.id}>
-                        <TableCell>{item.name}</TableCell>
+                        <TableCell>
+                          <Link href={`/products/${item.id}`}>{item.name}</Link>
+                        </TableCell>
                         <TableCell>
                           <Avatar src={item.image} />
                         </TableCell>
@@ -95,6 +114,7 @@ const Cart = () => {
                       onClick={() => navigate("/checkout")}
                       variant="contained"
                       color="primary"
+                      disabled={cart.items.length === 0}
                     >
                       Checkout
                     </Button>
