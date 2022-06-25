@@ -19,9 +19,10 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebase";
 import moment from "moment";
+import { getAuth } from "firebase/auth";
 
 const socket = io("https://occipital-iron-ounce.glitch.me/");
 
@@ -32,16 +33,18 @@ const validationSchema = Yup.object().shape({
 
 const CheckOut = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const[deliveryLoc, setDeliveryLoc] = useState("");
+  const [user, setUser] = useState(null);
+  const [deliveryLoc, setDeliveryLoc] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [res, setRes] = useState("");
 
-  const { cart } = useCart();
+  const { cart, clearCart } = useCart();
 
   const handleSubmit = (values) => {
     setPhoneNumber(values.phone);
-    setDeliveryLoc(values.location);  };
+    setDeliveryLoc(values.location);
+  };
 
   socket.on("connect", () => {
     console.log("connected");
@@ -81,13 +84,14 @@ const CheckOut = () => {
       status: "paid",
       createdAt: moment().format("YYYY-MM-DD HH:mm:ss"),
       paymentMethod: "mpesa",
+      user: user,
     };
     const docRef = await addDoc(ordersDoc, order);
-    console.log(docRef);
     if (docRef) {
       toast.success("Order created successfully");
       navigate("/orders");
       setLoading(false);
+      clearCart()
     }
   }
 
@@ -108,7 +112,21 @@ const CheckOut = () => {
     if (res === "The initiator information is invalid.") {
       toast.error("The initiator information is invalid.");
     }
+    async function fetchUser() {
+      setLoading(true);
+      try {
+        const userDoc = await doc(db, "users", getAuth().currentUser.uid);
+        const user = await getDoc(userDoc);
+        setUser(user.data());
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setError(error.message);
+      }
+    }
+    fetchUser();
   }, [res]);
+
 
   return (
     <>

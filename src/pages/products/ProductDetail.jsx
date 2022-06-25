@@ -43,10 +43,8 @@ const ProductDetail = () => {
     fetchProduct();
   }, [params]);
 
-  const { addToCart, cart, updateProductQty } = useCart();
+  const { cart, updateProductQty } = useCart();
   const qty = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const p = cart.items.find((p) => p.id === product.id);
-  console.log(p);
 
   return (
     <>
@@ -90,15 +88,18 @@ const ProductDetail = () => {
                 <Card sx={{ minWidth: 300 }}>
                   <CardMedia
                     component="img"
-                    height="200"
+                    height="300"
                     image={product.image}
                     alt="green iguana"
+                    sx={{
+                      p: 5,
+                    }}
                   />
                 </Card>
               </div>
             </Grid>
             <Grid item xs={12} md={6}>
-              <Card>
+              <Card sx={{ p: 6 }}>
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
                     {product.name}
@@ -122,7 +123,11 @@ const ProductDetail = () => {
                         padding: "5px",
                       }}
                       onChange={(e) =>
-                        updateProductQty(params.id, parseInt(e.target.value))
+                        updateProductQty(
+                          product,
+                          parseInt(e.target.value, params.id),
+                          params.id
+                        )
                       }
                     >
                       {qty.map((qty) => (
@@ -130,7 +135,7 @@ const ProductDetail = () => {
                           key={qty}
                           value={qty}
                           selected={
-                            cart.items.find((p) => p.id === product.id)
+                            cart.items.find((p) => p.id === params.id)
                               ?.quantity === qty
                           }
                         >
@@ -141,20 +146,13 @@ const ProductDetail = () => {
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Total Price:{" "}
-                    {cart.items.find((p) => p.id === product.id)
-                      ? cart.items.find((p) => p.id === product.id).quantity *
+                    {cart.items.find((p) => p.id === params.id)
+                      ? cart.items.find((p) => p.id === params.id).quantity *
                         product.price
                       : 0}
                   </Typography>
                 </CardContent>
                 <CardActions>
-                  <Button
-                    variant="contained"
-                    startIcon={<ShoppingBasketOutlined />}
-                    onClick={() => addToCart(product)}
-                  >
-                    Add To Card
-                  </Button>
                   <Button onClick={() => navigate(`/cart`)} variant="contained">
                     View Cart
                   </Button>
