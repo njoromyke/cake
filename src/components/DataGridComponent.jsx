@@ -64,7 +64,7 @@ const DataGridComponent = ({ title, buttonTitle, columns, rows, onClick }) => {
               rows={rows}
               columns={columns}
               pageSize={7}
-              getRowId={(row) => row.name || row.checkIn}
+              getRowId={(row) => row.name || row.createdAt}
               disableSelectionOnClick
               components={{
                 Toolbar: GridToolbar,

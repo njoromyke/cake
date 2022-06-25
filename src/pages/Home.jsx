@@ -17,6 +17,7 @@ import { Box } from "@mui/system";
 import { ShoppingBasketOutlined } from "@mui/icons-material";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@emotion/react";
 
 const Home = () => {
   const [products, setProduct] = useState([]);
@@ -49,14 +50,41 @@ const Home = () => {
     fetchProducts();
   }, []);
 
-  console.log(cart);
-
+const {palette} = useTheme();
   return (
     <>
       <NavBar />
+      <Grid item xs={12} md={12}>
+        <div
+          style={{
+            backgroundImage:
+              "url(https://t4.ftcdn.net/jpg/02/70/23/75/360_F_270237541_1hPJQvxemM7NkWBHVYqmVyFc8I74tw1k.jpg)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            height: "300px",
+            width: "100%",
+            backgroundRepeat: "no-repeat",
+            backgroundAttachment: "fixed",
+            textAlign: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+            // darken is used to darken the background image
+            backgroundColor: palette.type === "dark" ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0.5)",
+          }}
+        >
+          <h2 style={{
+            color: palette.primary.main,
+            fontSize: "2rem",
+            fontWeight: "bold",
+            zIndex: "1",
+          }}>Welcome to Cakerize ecommerce app</h2>
+        </div>
+      </Grid>
       <Box
         sx={{
           mt: 10,
+          px: 3,
         }}
       >
         <Grid container spacing={3}>
@@ -68,14 +96,31 @@ const Home = () => {
               <CircularProgress color="inherit" />
             </Backdrop>
           )}
+
+          <Grid item xs={12} md={12}>
+            <Typography
+              variant="h4"
+              sx={{ textAlign: "center" }}
+              component="h2"
+            >
+              Latest Products
+            </Typography>
+          </Grid>
+
           {products.map((product) => (
             <Grid item xs={12} md={3}>
-              <Card>
+              <Card
+                sx={{
+                  maxWidth: "300px",
+                  mb: 3,
+                }}
+              >
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="250"
                   image={product.image}
                   alt="green iguana"
+                  placeholder="loading..."
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">

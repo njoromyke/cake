@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   Avatar,
   Backdrop,
+  Badge,
   CircularProgress,
   Grid,
   Link,
@@ -23,7 +24,7 @@ import NavBar from "../../components/NavBar";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { db } from "../../config/firebase";
 
-export default function ListProducts() {
+export default function Orders() {
   const { palette } = useTheme();
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
@@ -31,21 +32,63 @@ export default function ListProducts() {
   const [data, setData] = React.useState([]);
   const [success, setSuccess] = React.useState(false);
 
+  const user = getAuth().currentUser;
+
   const columns = [
     {
       field: "name",
-      width: 400,
+      width: 200,
       headerName: "Name",
       renderCell: (params) => {
-        return <> {params.row.name} </>;
+        return (
+          <>
+            {params.row.orderItems.items.map((item) => (
+              <div>{item.name}</div>
+            ))}
+          </>
+        );
+      },
+    },
+    {
+      field: "user",
+      width: 200,
+      headerName: "Ordered By",
+      renderCell: (params) => {
+        return (
+          <>
+            <div>{params.row.user.name}</div>
+          </>
+        );
       },
     },
     {
       field: "price",
-      width: 400,
+      width: 200,
       headerName: "Price",
       renderCell: (params) => {
-        return <> {params.row.price} </>;
+        return (
+          <>
+            {params.row.orderItems.items.map((item) => (
+              <div>{item.price}</div>
+            ))}
+          </>
+        );
+      },
+    },
+    {
+      field: "status",
+      width: 200,
+      headerName: "Payment Status",
+      renderCell: (params) => {
+        return (
+          <>
+            {params.row.status === "paid" ? (
+              <Typography color="primary">Paid</Typography>
+            ) : (
+              <Typography color="danger">Pending</Typography>
+            )}
+          </>
+        );
       },
     },
     {
@@ -53,26 +96,43 @@ export default function ListProducts() {
       headerName: "Image",
       width: 150,
       renderCell: (params) => {
-        return <Avatar src={params.row.image} />;
+        return (
+          <>
+            {params.row.orderItems.items.map((item) => (
+              <Avatar src={item.image} />
+            ))}
+          </>
+        );
       },
+    },
+    {
+      field: "quantity",
+      headerName: "Quantity",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <>
+            {params.row.orderItems.items.map((item) => (
+              <div>{item.quantity}</div>
+            ))}
+          </>
+        );
+      },
+    },
+    {
+      field: "totalPrice",
+      headerName: "Total Price",
+      width: 150,
+      renderCell: (params) => <>{params.row.totalPrice}</>,
     },
 
     {
       field: "action",
       headerName: "Action",
-      width: 400,
+      width: 200,
       renderCell: (params) => {
         return (
           <>
-            <Link href={`/admin/products/${params.row.id}`}>
-              <ModeEditOutlineOutlined
-                style={{
-                  color: palette.primary.main,
-                  cursor: "pointer",
-                  marginRight: "10px",
-                }}
-              />
-            </Link>
             <DeleteOutline
               className="delIcon"
               sx={{
@@ -88,7 +148,7 @@ export default function ListProducts() {
   ];
   const userInfo = getAuth().currentUser;
 
-  const roomsRef = collection(db, "products");
+  const ordersRef = collection(db, "orders");
 
   React.useEffect(() => {
     if (userInfo && !userInfo.uid) {
@@ -100,7 +160,7 @@ export default function ListProducts() {
     async function fetchData() {
       setLoading(true);
       try {
-        const data = await getDocs(roomsRef);
+        const data = await getDocs(ordersRef);
         setData(
           data.docs.map((doc) => ({
             ...doc.data(),
@@ -128,6 +188,7 @@ export default function ListProducts() {
       }
     }
   };
+
   return (
     <>
       <NavBar />
@@ -142,7 +203,6 @@ export default function ListProducts() {
           {data && (
             <DataGridComponent
               buttonTitle={"Add Product"}
-              onClick={() => navigate("/admin/products/add")}
               title={"Product List"}
               columns={columns}
               rows={data}

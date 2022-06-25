@@ -8,11 +8,11 @@ export function CartContextProvider({ children }) {
     totalPrice: 0,
   });
 
-  
-
   async function addToCart(item) {
     const newCart = { ...cart };
-    const itemIndex = newCart.items.findIndex((i) => i.id === item.id);
+    const itemIndex = newCart.items.findIndex(
+      (i) => i.id === item.id || i.id === item.id
+    );
     if (itemIndex === -1) {
       newCart.items.push({ ...item, quantity: 1 });
     } else {
@@ -27,7 +27,7 @@ export function CartContextProvider({ children }) {
     localStorage.setItem("cart", JSON.stringify(newCart));
   }
 
-  async function removeFromCart(item) {
+  async function removeFromCart(item, id) {
     const newCart = { ...cart };
     const itemIndex = newCart.items.findIndex((i) => i.id === item.id);
     if (itemIndex !== -1) {
@@ -51,10 +51,15 @@ export function CartContextProvider({ children }) {
     localStorage.setItem("cart", JSON.stringify(newCart));
   }
 
-  async function updateProductQty(item, qty) {
+  async function updateProductQty(item, qty, id) {
+    //if item is not in cart, add it
     const newCart = { ...cart };
-    const itemIndex = newCart.items.findIndex((i) => i.id === item.id);
-    if (itemIndex !== -1) {
+    const itemIndex = newCart.items.findIndex((i) => i.id === id);
+    if (itemIndex === -1) {
+      newCart.items.push({ ...item, quantity: qty ,id});
+    }
+    //if item is in cart, update qty
+    else {
       newCart.items[itemIndex].quantity = qty;
     }
     newCart.total = newCart.items.reduce((acc, cur) => acc + cur.quantity, 0);
@@ -72,7 +77,7 @@ export function CartContextProvider({ children }) {
       setCart(JSON.parse(cart));
     }
   }, []);
-  
+
   return (
     <useCartContext.Provider
       value={{
