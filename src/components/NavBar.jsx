@@ -16,13 +16,17 @@ import { toast } from "react-toastify";
 import { useTheme } from "@emotion/react";
 import { useCart } from "../context/CartContext";
 import { ShoppingBasket } from "@mui/icons-material";
+import { useUserAuth } from "../context/UserAuthContext";
+import { getAuth } from "firebase/auth";
+import { collection, getDoc, getDocs } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const NavBar = () => {
   const { palette } = useTheme();
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [user, setUser] = React.useState(null);
+  const [userInfo, setUserInfo] = React.useState([]);
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -40,10 +44,36 @@ const NavBar = () => {
   };
   const navigate = useNavigate();
 
-  const handleLogout = async () => {};
+  const { cart, clearCart } = useCart();
+  const { logout } = useUserAuth();
 
-  const { addToCart, cart } = useCart();
+  const myUser = getAuth().currentUser;
 
+
+
+  const usersRef = collection(db, "users");
+
+  React.useEffect(() => {
+    async function getUser() {
+      const user = await getDocs(usersRef);
+      setUserInfo(user.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    }
+    getUser();
+  }, []);
+
+  // get user from user who is same as logged in user
+  const userLogged = userInfo?.filter((user) => user.email === myUser.email);
+
+    const handleLogout = async () => {
+      try {
+        await logout();
+        clearCart();
+        navigate("/");
+        toast.success("Logged out successfully");
+      } catch (error) {
+        toast.error(error.message);
+      }
+    };
   return (
     <AppBar position="sticky">
       <Container maxWidth="xl">
@@ -107,13 +137,25 @@ const NavBar = () => {
               <MenuItem onClick={handleCloseNavMenu}>
                 <Typography
                   onClick={() => {
-                    navigate("/my-orders");
+                    navigate("/orders");
                   }}
                   variant="subtitle1"
                 >
                   My Orders
                 </Typography>
               </MenuItem>
+              {userLogged && userLogged[0]?.isAdmin && (
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography
+                    onClick={() => {
+                      navigate("/admin/orders");
+                    }}
+                    variant="subtitle1"
+                  >
+                    Orders
+                  </Typography>
+                </MenuItem>
+              )}
               <MenuItem onClick={handleCloseNavMenu}>
                 <Box
                   sx={{
@@ -155,7 +197,7 @@ const NavBar = () => {
 
             <Button
               onClick={() => {
-                navigate("/my-orders");
+                navigate("/orders");
               }}
               sx={{
                 color: palette.primary.contrastText,
@@ -163,6 +205,30 @@ const NavBar = () => {
             >
               My Orders
             </Button>
+            {userLogged && userLogged[0]?.isAdmin && (
+              <>
+                <Button
+                  onClick={() => {
+                    navigate("/admin/orders");
+                  }}
+                  sx={{
+                    color: palette.primary.contrastText,
+                  }}
+                >
+                  Admin Orders
+                </Button>
+                <Button
+                  onClick={() => {
+                    navigate("/admin/products");
+                  }}
+                  sx={{
+                    color: palette.primary.contrastText,
+                  }}
+                >
+                  Amin Products
+                </Button>
+              </>
+            )}
             <Button
               onClick={() => {
                 navigate("/cart");
